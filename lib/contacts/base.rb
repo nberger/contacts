@@ -205,6 +205,26 @@ class Contacts
     end
   end
 
+  def self.guess_connect(login, password, options = {})
+    account_types = options.delete(:account_types)
+    if account_types && account_types.any?
+      guess_types = TYPES.slice(*account_types)
+    else
+      guess_types = TYPES
+    end
+
+    guess_types.values.each {|klass|
+      begin
+        connected = klass.new(login, password)
+        # return this instance if it didn't raise exception
+        return connected
+      rescue
+      end
+    }
+    # couldn't connect with any type
+    nil
+  end
+
   def self.guess(login, password, options={})
     TYPES.inject([]) do |a, t|
       begin
