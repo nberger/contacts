@@ -28,6 +28,8 @@ class Contacts
       
       if resp.code_type != Net::HTTPOK
         raise ConnectionError, PROTOCOL_ERROR
+      elsif data.index("We'll help you sign in to Yahoo")
+        raise AuthenticationError, "Username and password do not match"
       end
       
       @cookies = cookies
